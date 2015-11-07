@@ -3,13 +3,29 @@ import requests
 from helpers.devices.CameraDevice import CameraDevice
 
 
+DEFAULT_PASSWORD = ''
+DEFAULT_PORT = 99
+DEFAULT_USER = 'admin'
+
+
 class Wanscam(CameraDevice):
-    def __init__(self, ip, port=99, user='admin', password=''):
+    def __init__(self, ip, name='', port=DEFAULT_PORT, user=DEFAULT_USER,
+                 password=DEFAULT_PASSWORD):
         super(Wanscam, self).__init__()
         self.ip = ip
         self.port = port
         self.user = user
         self.password = password
+
+        if name:
+            self.name = name
+
+    def get_config(self):
+        """Get config info to save (passed on constructor on restart)
+
+        :return: list of object parameters
+        """
+        return {'args': [self.ip, self.port, self.user, self.password], 'kwargs': {}}
 
     def make_snapshot(self):
         """Use camera to make a snapshot"""
@@ -33,7 +49,12 @@ class Wanscam(CameraDevice):
         self.__send_command(0)
 
     def __send(self, page):
-        return requests.get('http://%s:%d/%s' % (self.ip, self.port, page), auth=(self.user, self.password))
+        try:
+            return requests.get('http://%s:%d/%s' % (self.ip, self.port, page), auth=(self.user, self.password))
+        except:
+            result = requests.Response()
+            result.status_code = 503  # Service Unavailable
+            return result
 
-    def __send_command(self, commande_id):
-        return self.__send('decoder_control.cgi?command=%s' % commande_id)
+    def __send_command(self, command_id):
+        return self.__send('decoder_control.cgi?command=%s' % command_id)

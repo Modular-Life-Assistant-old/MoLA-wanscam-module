@@ -4,13 +4,21 @@ from .Wanscam import Wanscam
 
 class Module(DevicesModule):
     wait_next_update = 1
+    device_class = Wanscam
 
-    def init(self):
-        self.add_device(Wanscam('192.168.1.2', 80, 'mola', 'KGwErtlWkJ08'))
+    def device_on_network(self, ip, mac):
+        """Device are detected on network
 
-    def search_new(self):
-        """Search new devices
-
-        :return: list of device object
+        :param ip: ip adress
+        :param mac: mac adress
         """
-        return []
+        # is compatible device ?
+        if not mac.startswith('0018fb'):
+            return
+
+        # is already added
+        for device in self.devices.values():
+            if ip == device.ip:
+                return
+
+        self.add_device(ip)
