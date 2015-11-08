@@ -9,7 +9,7 @@ DEFAULT_USER = 'admin'
 
 
 class Wanscam(CameraDevice):
-    def __init__(self, ip, name='', port=DEFAULT_PORT, user=DEFAULT_USER,
+    def __init__(self, ip, name='Wanscam', port=DEFAULT_PORT, user=DEFAULT_USER,
                  password=DEFAULT_PASSWORD):
         super(Wanscam, self).__init__()
         self.ip = ip
