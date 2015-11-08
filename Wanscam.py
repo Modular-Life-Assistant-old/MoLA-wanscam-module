@@ -25,7 +25,9 @@ class Wanscam(CameraDevice):
 
         :return: list of object parameters
         """
-        return {'args': [self.ip, self.port, self.user, self.password], 'kwargs': {}}
+        kwargs_index = ('name', 'port', 'user', 'password')
+        kwargs = {i: getattr(self, i) for i in kwargs_index}
+        return {'args': [self.ip], 'kwargs': kwargs}
 
     def make_snapshot(self):
         """Use camera to make a snapshot"""
