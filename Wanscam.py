@@ -53,7 +53,8 @@ class Wanscam(CameraDevice):
     def __send(self, page):
         try:
             return requests.get('http://%s:%d/%s' % (self.ip, self.port, page), auth=(self.user, self.password))
-        except:
+        except Exception as e:
+            self.add_error('Device unusable: %s' % e)
             result = requests.Response()
             result.status_code = 503  # Service Unavailable
             return result
