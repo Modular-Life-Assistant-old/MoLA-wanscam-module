@@ -46,6 +46,10 @@ class Wanscam(CameraDevice):
         """Move camera to right"""
         self.__send_command(4)
 
+    def move_stop(self):
+        """Stop camera mouving"""
+        self.__send_command(1)
+
     def move_top(self):
         """Move camera to up"""
         self.__send_command(0)
