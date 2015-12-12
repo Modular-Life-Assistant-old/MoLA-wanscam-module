@@ -29,6 +29,10 @@ class Wanscam(CameraDevice):
         kwargs = {i: getattr(self, i) for i in kwargs_index}
         return {'args': [self.ip], 'kwargs': kwargs}
 
+    def get_streaming(self):
+        """stream video"""
+        return self.__send('videostream.cgi', stream=True)
+
     def make_snapshot(self):
         """Use camera to make a snapshot"""
         result = self.__send('snapshot.cgi')
@@ -54,9 +58,10 @@ class Wanscam(CameraDevice):
         """Move camera to up"""
         self.__send_command(0)
 
-    def __send(self, page):
+    def __send(self, page, **options):
         try:
-            return requests.get('http://%s:%d/%s' % (self.ip, self.port, page), auth=(self.user, self.password))
+            return requests.get('http://%s:%d/%s' % (self.ip, self.port, page),
+                                auth=(self.user, self.password), **options)
         except Exception as e:
             self.add_error('Device unusable: %s' % e)
             result = requests.Response()
